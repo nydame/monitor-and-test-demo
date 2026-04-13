@@ -1,0 +1,18 @@
+{
+  "name": "oesa-monitoring",
+  "version": "1.0.0",
+  "description": "Automated monitoring and alerts for oneearthsacredarts.com using Playwright",
+  "type": "module",
+  "scripts": {
+    "test": "playwright test",
+    "test:watch": "playwright test --ui",
+    "test:debug": "playwright test --debug",
+    "type-check": "tsc --noEmit",
+    "lint": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.44.0",
+    "@types/node": "^25.6.0",
+    "typescript": "^5.4.0"
+  }
+}
