@@ -17,6 +17,9 @@ export default defineConfig({
     screenshot: 'only-on-failure',
     trace: 'retain-on-failure',
     video: 'off',
+    extraHTTPHeaders: {
+      'X-Requester': 'Firefly Web Services',
+    },
   },
   projects: [
     {
