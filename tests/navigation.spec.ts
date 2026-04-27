@@ -42,12 +42,13 @@ test.describe('Navigation', () => {
       hrefs.push(href);
     }
 
-    expect(hrefs.length, 'Should find at least one internal nav link to verify').toBeGreaterThan(0);
+    expect(hrefs.length, 'Should find at least three internal nav link to verify').toBeGreaterThan(2);
 
-    // Navigate to the first internal link and verify it loads
-    const response = await page.goto(hrefs[0]!);
+    // Wait 3 seconds, then navigate to the third internal link and verify it loads
+    await page.waitForTimeout(3000);
+    const response = await page.goto(hrefs[2]!);
     const status = response?.status() ?? 200;
-    expect(status, `Nav destination ${hrefs[0]} should load without error`).toBeLessThan(400);
+    expect(status, `Nav destination ${hrefs[2]} should load without error`).toBeLessThan(400);
     await expect(page.locator('body')).toBeVisible();
   });
 
