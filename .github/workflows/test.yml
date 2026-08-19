@@ -7,6 +7,9 @@ on:
   push:
     branches:
       - main
+  pull_request:
+    branches:
+      - main
   workflow_dispatch:  # Allow manual runs from the Actions tab
 
 jobs:
@@ -14,12 +17,6 @@ jobs:
     name: Playwright Tests
     runs-on: ubuntu-latest
     timeout-minutes: 15
-    permissions:
-      pages: write
-      id-token: write
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
 
     steps:
       - name: Checkout code
@@ -28,7 +25,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '18'
+          node-version: '24'
           cache: 'npm'
 
       - name: Install dependencies
@@ -59,17 +56,34 @@ jobs:
           path: test-results/
           retention-days: 7
 
+  deploy:
+    name: Deploy Report to GitHub Pages
+    needs: test
+    # Skip on pull requests; still deploy even if tests failed
+    if: ${{ !cancelled() && github.event_name != 'pull_request' }}
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Download test report
+        uses: actions/download-artifact@v4
+        with:
+          name: playwright-report-${{ github.run_number }}
+          path: playwright-report/
+
       - name: Configure GitHub Pages
-        if: always()
         uses: actions/configure-pages@v4
 
       - name: Upload report to GitHub Pages
-        if: always()
         uses: actions/upload-pages-artifact@v3
         with:
           path: playwright-report/
 
       - name: Deploy to GitHub Pages
-        if: always()
         id: deployment
         uses: actions/deploy-pages@v4
