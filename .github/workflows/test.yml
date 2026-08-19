@@ -60,7 +60,7 @@ jobs:
     name: Deploy Report to GitHub Pages
     needs: test
     # Skip on pull requests; still deploy even if tests failed
-    if: always() && github.event_name != 'pull_request'
+    if: !cancelled() && github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     permissions:
       pages: write
